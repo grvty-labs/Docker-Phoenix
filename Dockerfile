@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-MAINTAINER Daniel Ortíz <daniel.ortiz@grvtylabs.com>
+LABEL maintainer "Daniel Ortíz <daniel.ortiz@grvtylabs.com>"
 # Obtained and edited using:
 # https://github.com/marcelocg/phoenix-docker
 # https://github.com/appcues/docker-elixir-dev
@@ -34,11 +34,20 @@ ENV PHOENIX_VERSION 1.2.1
 
 # install the Phoenix Mix archive
 RUN mix archive.install --force https://github.com/phoenixframework/archives/raw/master/phoenix_new-$PHOENIX_VERSION.ez
-RUN mix local.hex
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
 # install Node.js (>= 6.0.0) and NPM in order to satisfy brunch.io dependencies
 # See http://www.phoenixframework.org/docs/installation#section-node-js-5-0-0-
 RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && sudo apt-get install -y nodejs
 RUN npm install -g brunch
 
-WORKDIR /code
+ONBUILD WORKDIR /usr/src/app
+
+ONBUILD COPY *.js* /usr/src/app/
+ONBUILD RUN npm install
+
+ONBUILD ENV MIX_ENV prod
+ONBUILD COPY mix.* /usr/src/app/
+ONBUILD COPY config /usr/src/app/
+ONBUILD RUN mix do deps.get, deps.compile
