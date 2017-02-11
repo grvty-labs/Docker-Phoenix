@@ -1,6 +1,9 @@
 FROM ubuntu:16.04
 
 MAINTAINER Daniel Ortíz <daniel.ortiz@grvtylabs.com>
+# Obtained and edited using:
+# https://github.com/marcelocg/phoenix-docker
+# https://github.com/appcues/docker-elixir-dev
 
 # Elixir requires UTF-8
 RUN locale-gen en_US.UTF-8
@@ -11,7 +14,7 @@ ENV LC_ALL en_US.UTF-8
 # update and install software
 RUN apt-get update && apt-get upgrade -y \
     # install system depedencies
-    && apt-get install -y curl wget git make sudo \
+    && apt-get install -y curl wget git make sudo apt-utils \
     # download and install Erlang apt repo package
     && wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb \
     && dpkg -i erlang-solutions_1.0_all.deb \
@@ -31,13 +34,11 @@ ENV PHOENIX_VERSION 1.2.1
 
 # install the Phoenix Mix archive
 RUN mix archive.install --force https://github.com/phoenixframework/archives/raw/master/phoenix_new-$PHOENIX_VERSION.ez
+RUN mix local.hex
 
 # install Node.js (>= 6.0.0) and NPM in order to satisfy brunch.io dependencies
 # See http://www.phoenixframework.org/docs/installation#section-node-js-5-0-0-
 RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && sudo apt-get install -y nodejs
+RUN npm install -g brunch
 
 WORKDIR /code
-
-# Obtained and edited using:
-# https://github.com/marcelocg/phoenix-docker
-# https://github.com/appcues/docker-elixir-dev
