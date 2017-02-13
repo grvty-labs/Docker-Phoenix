@@ -14,7 +14,7 @@ ENV LC_ALL en_US.UTF-8
 # update and install software
 RUN apt-get update && apt-get upgrade -y \
     # install system depedencies
-    && apt-get install -y curl wget git make sudo apt-utils \
+    && apt-get install -y curl wget git make sudo apt-utils build-essential libssl \
     # download and install Erlang apt repo package
     && wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb \
     && dpkg -i erlang-solutions_1.0_all.deb \
