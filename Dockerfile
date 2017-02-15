@@ -21,8 +21,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     git \
     libssl1.0.0 \
+    postgresql-client \
   && apt-get autoclean \
-  && rm -rf /var/lib/apt/lists/*
+  && apt-get autoremove -y \
+  && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 # Download and install Erlang apt repo package
 RUN wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb \
@@ -45,7 +47,8 @@ RUN apt-get update && apt-get install -y \
     erlang-parsetools \
     nodejs \
   && apt-get autoclean \
-  && rm -rf /var/lib/apt/lists/*
+  && apt-get autoremove -y \
+  && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 ENV PHOENIX_VERSION 1.2.1
 
